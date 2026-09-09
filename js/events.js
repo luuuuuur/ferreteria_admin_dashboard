@@ -390,6 +390,10 @@ function LoadAddProductForm() {
             <input type="text" id="new-categoria" placeholder="Ej: Mat. Construcción" required>
             <br><br>
 
+            <label>Marca:</label><br>
+            <input type="text" id="new-marca" placeholder="Ej: Marca..." required>
+            <br><br>
+
             <label>Precio de Venta:</label><br>
             <input type="number" id="new-precio" placeholder="Ej: 6500" required>
             <br><br>

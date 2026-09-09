@@ -105,7 +105,7 @@ let productos = [
   { codigo: "JA005", categoria: "Jardín", subcategoria: "Herramientas", nombre: "Rastrillo 16 dientes con mango", marca: "Corona", unidad: "Unidad", precioCompra: 4800, precioVenta: 9490, stock: 6, stockMinimo: 2 }
 ];
 localStorage.setItem("productos", JSON.stringify(productos))
-//añade empleados
+//carga panel
 function LoadEmployeePanel(){
     const contenedor = document.getElementById("option-selected-container");
     contenedor.innerHTML = `
@@ -131,7 +131,7 @@ function LoadEmployeePanel(){
     script.textContent = "document.getElementById('btn-guardar-empleado').addEventListener('click', guardarNuevoEmpleado);";
     document.body.appendChild(script);
 }
-
+//funcion para guardar trabajadores
 function guardarNuevoEmpleado() {
     const nombre = document.getElementById("emp-nombre").value.trim();
     const email = document.getElementById("emp-email").value.trim();
@@ -187,7 +187,7 @@ function guardarNuevoEmpleado() {
         alert("Ocurrió un error al guardar: " + error);
     }
 }
-// Función para buscar y actualizar los datos del empleado
+// Función para actualizar los datos del empleado
 function actualizarEmpleado() {
     const emailBuscado = document.getElementById("edit-email").value.trim();
     const nuevoNombre = document.getElementById("edit-nombre").value.trim();
@@ -456,19 +456,41 @@ function LoadListProducts() {
 
     contenedor.innerHTML = contenidoHTML;
 }
+//funcion para vlidar campos de texto y el valor
+const textoInvalido = (valor, campo) => {
+        const valorNormalizado = valor.trim();
+        const numero = Number(valorNormalizado);
+
+        if (
+            valorNormalizado === "" ||
+            valorNormalizado === "0" ||
+            numero === 0 ||
+            (typeof numero === "number" && !Number.isNaN(numero) && numero < 0)
+        ) {
+            alert(`Error: El campo "${campo}" no puede estar vacío, ser 0 o contener un número negativo.`);
+            return true;
+        }
+
+        return false;
+    };
 
 
 function guardarNuevoProducto() {
     const codigo = document.getElementById("new-codigo").value.trim();
     const nombre = document.getElementById("new-nombre").value.trim();
     const categoria = document.getElementById("new-categoria").value.trim();
+    const marcaInput = document.getElementById("new-marca");
+    const marca = marcaInput ? marcaInput.value.trim() : "";
     const precioInput = document.getElementById("new-precio").value.trim();
     const stockInput = document.getElementById("new-stock").value.trim();
-
     if (!codigo || !nombre || !categoria || !precioInput || !stockInput) {
         alert("Por favor completa todos los campos obligatorios.");
         return;
     }
+
+    if (textoInvalido(nombre, "Nombre")) return;
+    if (textoInvalido(categoria, "Categoría")) return;
+    if (marcaInput && textoInvalido(marca, "Marca")) return;
 
     const precioVenta = parseInt(precioInput);
     const stock = parseInt(stockInput);
@@ -497,6 +519,7 @@ function guardarNuevoProducto() {
         codigo: codigo,
         nombre: nombre,
         categoria: categoria,
+        marca: marca || "N/A",
         precioVenta: precioVenta,
         stock: stock
     };
@@ -513,6 +536,17 @@ function guardarNuevoProducto() {
     }
 }
     document.addEventListener("DOMContentLoaded", ()=>{
+    const menuToggle = document.querySelector(".menu-toggle");
+    const nav = document.querySelector(".options");
+
+    if (menuToggle && nav) {
+        menuToggle.addEventListener("click", () => {
+            const isOpen = nav.classList.toggle("open");
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+            menuToggle.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
+        });
+    }
+
     document.getElementById("empleados").addEventListener("click", LoadEmployeePanel);
     document.getElementById("editarEmpleados").addEventListener("click", LoadEditEmployeeForm);
     document.getElementById("listarEmpleados").addEventListener("click", LoadListEmployees);
